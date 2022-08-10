@@ -1,3 +1,9 @@
+mod ecc;
+
 fn main() {
-    println!("Hello, world!");
+    let a = ecc::FieldElement::init(7, 13);
+    let b = ecc::FieldElement::init(6, 13);
+    println!("{:?}, {:?}", a, b);
+    println!("{}", a == b);
+    println!("{}", a == a);
 }
