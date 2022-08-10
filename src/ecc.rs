@@ -38,6 +38,13 @@ mod tests{
     }
 
     #[test]
+    fn ex1_1(){
+        let a = FieldElement::init(7, 13);
+        let b = FieldElement::init(6, 13);
+        assert_eq!(a != b,true);
+    }
+
+    #[test]
     fn test_eq(){
         let a = FieldElement::init(7, 13);
         let b = FieldElement::init(6, 13);
@@ -45,18 +52,37 @@ mod tests{
     }
 
     #[test]
-    fn test_add(){
-        let a = FieldElement::init(7, 13);
-        let b = FieldElement::init(6, 13);
-        let c = FieldElement::init(13, 13);
+    fn ex1_2_1(){
+        let a = FieldElement::init(44, 57);
+        let b = FieldElement::init(33, 57);
+        let c = FieldElement::init(77, 57);
         assert_eq!(a.add(&b), c);
     }
 
     #[test]
-    fn test_sub(){
-        let a = FieldElement::init(6, 13);
-        let b = FieldElement::init(7, 13);
-        let c = FieldElement::init(-1, 13);
+    fn ex1_2_2(){
+        let a = FieldElement::init(9, 57);
+        let b = FieldElement::init(29, 57);
+        let c = FieldElement::init(-20, 57);
         assert_eq!(a.sub(&b), c);
     }
+
+    #[test]
+    fn ex1_2_3(){
+        let a = FieldElement::init(17, 57);
+        let b = FieldElement::init(42, 57);
+        let c = FieldElement::init(49, 57);
+        let d = FieldElement::init(108, 57);
+        assert_eq!(a.add(&b).add(&c), d);
+    }
+
+    #[test]
+    fn ex1_2_4(){
+        let a = FieldElement::init(52, 57);
+        let b = FieldElement::init(30, 57);
+        let c = FieldElement::init(38, 57);
+        let d = FieldElement::init(-16, 57);
+        assert_eq!(a.add(&b).add(&c), d);
+    }
+
 }
