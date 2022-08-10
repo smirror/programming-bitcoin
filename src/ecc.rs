@@ -34,6 +34,7 @@ mod tests{
         let a = FieldElement::init(7, 13);
         let b = FieldElement::init(6, 13);
         assert_eq!(a == b, false);
+        assert_eq!(a != b,true);
     }
 
     #[test]
