@@ -16,13 +16,29 @@ impl FieldElement{
     }
 
     pub fn add(&self, other: &FieldElement) -> FieldElement {
+        if &self.prime != &other.prime {
+            panic!("cannot add elements from different prime fields");
+        }
         FieldElement::init(self.num + other.num, self.prime)
     }
 
     pub fn sub(&self, other: &FieldElement) -> FieldElement {
+        if &self.prime != &other.prime {
+            panic!("cannot subtract elements from different prime fields");
+        }
         FieldElement::init(self.num - other.num, self.prime)
     }
 
+    pub fn mul(&self, other: &FieldElement) -> FieldElement {
+        if &self.prime != &other.prime {
+            panic!("cannot multiply elements from different prime fields");
+        }
+        FieldElement::init(self.num * other.num, self.prime)
+    }
+
+    pub fn pow(&self, exp: u32) -> FieldElement {
+        FieldElement::init(self.num.pow(exp), self.prime)
+    }
 }
 
 #[cfg(test)]
@@ -82,7 +98,7 @@ mod tests{
         let b = FieldElement::init(30, 57);
         let c = FieldElement::init(38, 57);
         let d = FieldElement::init(-16, 57);
-        assert_eq!(a.add(&b).add(&c), d);
+        assert_eq!(a.sub(&b).sub(&c), d);
     }
 
 }
