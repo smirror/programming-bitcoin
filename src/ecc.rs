@@ -15,3 +15,18 @@ impl FieldElement{
         }
     }
 }
+
+#[cfg(test)]
+
+mod tests{
+    use crate::ecc::FieldElement;
+
+    #[test]
+    fn test_partial_eq(){
+        let a = FieldElement::init(7, 13);
+        let b = FieldElement::init(6, 13);
+        assert_eq!(a, a);
+        assert_eq!(a == b, false);
+        assert_eq!(a == a, true);
+    }
+}
