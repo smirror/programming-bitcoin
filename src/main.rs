@@ -1,4 +1,5 @@
 mod ecc;
+mod lib;
 
 fn main() {
     let a = ecc::FieldElement::init(7, 13);

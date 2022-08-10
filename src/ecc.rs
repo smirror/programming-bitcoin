@@ -1,11 +1,13 @@
+use crate::lib::pow_mod;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FieldElement {
-    num: isize,
-    prime:  isize,
+    num: i64,
+    prime:  i64,
 }
 
 impl FieldElement{
-    pub fn init(num: isize, prime: isize) -> FieldElement {
+    pub fn init(num: i64, prime: i64) -> FieldElement {
         // if num >= prime {
         //     panic!("num {} not in field range 0 to {}", num, prime - 1);
         // }
@@ -36,8 +38,8 @@ impl FieldElement{
         FieldElement::init(self.num * other.num, self.prime)
     }
 
-    pub fn pow(&self, exp: u32) -> FieldElement {
-        FieldElement::init(self.num.pow(exp), self.prime)
+    pub fn pow(&self, exp: i64) -> FieldElement {
+        FieldElement::init(pow_mod(self.num, exp, self.prime as i32), self.prime)
     }
 }
 
@@ -99,6 +101,32 @@ mod tests{
         let c = FieldElement::init(38, 57);
         let d = FieldElement::init(-16, 57);
         assert_eq!(a.sub(&b).sub(&c), d);
+    }
+
+    #[test]
+    fn ex1_3_1(){
+        let a = FieldElement::init(95, 97);
+        let b = FieldElement::init(45, 97);
+        let c = FieldElement::init(31, 97);
+        let d = FieldElement::init(95*45*31, 97);
+        assert_eq!(a.mul(&b).mul(&c), d);
+    }
+
+    #[test]
+    fn ex1_3_2(){
+        let a = FieldElement::init(17, 97);
+        let b = FieldElement::init(13, 97);
+        let c = FieldElement::init(19, 97);
+        let d = FieldElement::init(44, 97);
+        assert_eq!(a.mul(&b).mul(&c).mul(&d), FieldElement::init(17*13*19*44, 97));
+    }
+
+    #[test]
+    fn ex1_3_3(){
+        let a = FieldElement::init(12, 97);
+        let b = FieldElement::init(77, 97);
+        let c = FieldElement::init(8 * 20, 97);
+        assert_eq!(a.pow(7).mul(&b.pow(49)), c);
     }
 
 }
