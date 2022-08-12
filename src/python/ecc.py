@@ -32,20 +32,29 @@ class FieldElement(object):
     def __floordiv__(self, other):
         return self.__truediv__(other)
 
+
 class Point:
-    def __init__(self,x,y,a,b):
+    def __init__(self, x, y, a, b):
         self.a = a
         self.b = b
         self.x = x
         self.y = y
         # secp256k1 curve
-        if self.y**2 != self.x**3 + a*x + b:
-            raise ValueError('({}, {}) is not on the curve'.format(x,y))
+        if self.y**2 != self.x**3 + a * x + b:
+            raise ValueError("({}, {}) is not on the curve".format(x, y))
 
     def __eq__(self, other):
-        return self.x == other.x and self.y == other.y \
-               and self.a == other.a and self.b == other.b
+        return (
+            self.x == other.x
+            and self.y == other.y
+            and self.a == other.a
+            and self.b == other.b
+        )
 
     def __ne__(self, other):
-        return self.x != other.x or self.y != other.y \
-               or self.a != other.a or self.b != other.b
+        return (
+            self.x != other.x
+            or self.y != other.y
+            or self.a != other.a
+            or self.b != other.b
+        )

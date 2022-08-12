@@ -84,7 +84,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(pow(a, -4) * b, FieldElement(13, 31))
 
     def test_ex2_1(self):
-        for i, xy in enumerate([(2,4), (-1,-1), (18,77), (5,7)]):
+        for i, xy in enumerate([(2, 4), (-1, -1), (18, 77), (5, 7)]):
             x, y = xy
             if i == 0 or i == 3:
                 with self.assertRaises(ValueError):
