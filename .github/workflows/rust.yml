@@ -22,9 +22,12 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Format code
-        id: git-check
         run: |
           cargo fmt --all -- --check
+
+      - name: check for modified files
+        id: git-check
+        run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
 
       - name: push changes
         id: push-changes
@@ -32,8 +35,11 @@ jobs:
         run: |
           git config --global user.email "23025996+smirror@users.noreply.github.com"
           git config --global user.name "smirror"
+          git config pull.rebase true
           git remote set-url origin https://x-access-token:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}
-          git commit -am "Automated changes"
+          git add .
+          git commit -am "Automated Cargo fmt changes"
+          git pull origin ${{github.event.pull_request.head.ref}}
           git push origin HEAD:${{github.event.pull_request.head.ref}}
 
       - name: Build
