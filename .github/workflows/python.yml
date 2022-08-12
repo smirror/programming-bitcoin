@@ -52,7 +52,7 @@ jobs:
           git remote set-url origin https://x-access-token:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}
           git add .
           git commit -am "Automated Python formatter changes"
-          git pull origin ${{github.event.pull_request.head.ref}}
+          git pull
           git push origin HEAD:${{github.event.pull_request.head.ref}}
 
       - name: Lint with flake8
