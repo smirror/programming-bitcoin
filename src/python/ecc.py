@@ -39,7 +39,6 @@ class Point:
         self.b = b
         self.x = x
         self.y = y
-        self.infinity = Point(None, None, a, b)
 
         # infinity point
         if self.x is None and self.y is None:
@@ -76,4 +75,4 @@ class Point:
             return self
 
         if self.x == other.x and  self.y != other.y:
-            return self.infinity
+            return Point(None, None, self.a, self.b)
