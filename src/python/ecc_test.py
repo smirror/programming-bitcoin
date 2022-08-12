@@ -1,5 +1,5 @@
 import unittest
-from ecc import FieldElement
+from ecc import *
 
 
 class MyTestCase(unittest.TestCase):
@@ -82,6 +82,17 @@ class MyTestCase(unittest.TestCase):
         a = FieldElement(4, 31)
         b = FieldElement(11, 31)
         self.assertEqual(pow(a, -4) * b, FieldElement(13, 31))
+
+
+    def test_ex2_1(self):
+        for i, xy in enumerate([(2,4), (-1,-1), (18,77), (5,7)]):
+            x, y = xy
+            if i == 0 or i == 3:
+                with self.assertRaises(ValueError):
+                    Point(x, y, 5, 7)
+            else:
+                point = Point(x, y, 5, 7)
+                print(point)
 
 
 if __name__ == "__main__":
