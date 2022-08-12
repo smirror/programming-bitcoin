@@ -93,6 +93,11 @@ class MyTestCase(unittest.TestCase):
                 point = Point(x, y, 5, 7)
                 print(point)
 
+    def test_ex2_4(self):
+        a = Point(2, 5, 5, 7)
+        b = Point(-1, -1, 5, 7)
+        print(a+b)
+
 
 if __name__ == "__main__":
     unittest.main()
