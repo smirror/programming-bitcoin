@@ -6,22 +6,22 @@ class FieldElement(object):
         self.prime = prime
 
     def __repr__(self):
-        return 'FieldElement_{}({})'.format(self.prime, self.num)
+        return "FieldElement_{}({})".format(self.prime, self.num)
 
     def __eq__(self, other):
         return self.num == other.num and self.prime == other.prime
 
     def __ne__(self, other):
-        return not(self.num == other.num and self.prime == other.prime)
+        return not (self.num == other.num and self.prime == other.prime)
 
     def __add__(self, other):
-        return self.__class__((self.num + other.num)% self.prime, self.prime)
+        return self.__class__((self.num + other.num) % self.prime, self.prime)
 
     def __sub__(self, other):
-        return self.__class__((self.num - other.num)% self.prime, self.prime)
+        return self.__class__((self.num - other.num) % self.prime, self.prime)
 
     def __mul__(self, other):
-        return self.__class__((self.num * other.num)% self.prime, self.prime)
+        return self.__class__((self.num * other.num) % self.prime, self.prime)
 
     def __pow__(self, n):
         return self.__class__(pow(self.num, n, self.prime), self.prime)
