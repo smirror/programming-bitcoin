@@ -20,10 +20,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Format code
+        id: git-check
         run: |
           cargo fmt --all -- --check
+
+      - name: push changes
+        id: push-changes
+        if: steps.git-check.outputs.modified == 'true'
+        run: |
+          git config --global user.email "23025996+smirror@users.noreply.github.com"
+          git config --global user.name "smirror"
+          git remote set-url origin https://x-access-token:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}
+          git commit -am "Automated changes"
+          git push origin HEAD:${{github.event.pull_request.head.ref}}
+
       - name: Build
         run: cargo build --verbose
+
       - name: Run tests
         run: cargo test --verbose
