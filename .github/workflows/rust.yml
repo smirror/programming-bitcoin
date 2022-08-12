@@ -3,8 +3,12 @@ name: Rust
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - "src/**/*.rs"
   pull_request:
     branches: [ "main" ]
+    paths:
+      - "src/**/*.rs"
 
 env:
   CARGO_TERM_COLOR: always
@@ -16,6 +20,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Format code
+        run: |
+          cargo fmt --all -- --check
       - name: Build
         run: cargo build --verbose
       - name: Run tests
