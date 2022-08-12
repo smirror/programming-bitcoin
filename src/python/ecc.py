@@ -39,6 +39,12 @@ class Point:
         self.b = b
         self.x = x
         self.y = y
+        self.infinity = Point(None, None, a, b)
+
+        # infinity point
+        if self.x is None and self.y is None:
+            return
+
         # secp256k1 curve
         if self.y**2 != self.x**3 + a * x + b:
             raise ValueError("({}, {}) is not on the curve".format(x, y))
@@ -58,3 +64,16 @@ class Point:
             or self.a != other.a
             or self.b != other.b
         )
+
+    def __add__(self, other):
+        if self.a != other.a or self.b != other.b:
+            raise TypeError('Points {}, {} are not on the same curve'.format(self, other))
+
+        if self.x is None:
+            return other
+
+        if other.x is None:
+            return self
+
+        if self.x == other.x and  self.y != other.y:
+            return self.infinity
