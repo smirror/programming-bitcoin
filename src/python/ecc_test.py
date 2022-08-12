@@ -102,5 +102,6 @@ class MyTestCase(unittest.TestCase):
         a = Point(-1, -1, 5, 7)
         print((a + a).x, (a + a).y)
 
+
 if __name__ == "__main__":
     unittest.main()
