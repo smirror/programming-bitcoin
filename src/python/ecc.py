@@ -66,7 +66,9 @@ class Point:
 
     def __add__(self, other):
         if self.a != other.a or self.b != other.b:
-            raise TypeError('Points {}, {} are not on the same curve'.format(self, other))
+            raise TypeError(
+                "Points {}, {} are not on the same curve".format(self, other)
+            )
 
         if self.x is None:
             return other
@@ -74,5 +76,5 @@ class Point:
         if other.x is None:
             return self
 
-        if self.x == other.x and  self.y != other.y:
+        if self.x == other.x and self.y != other.y:
             return Point(None, None, self.a, self.b)
