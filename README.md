@@ -5,4 +5,4 @@
 - Rust 1.62+
 
 ## Refarence
-- [python-bitcoinrpc](https://github.com/jimmysong/programmingbitcoin)
+- [programming-bitcoin](https://github.com/jimmysong/programmingbitcoin)
