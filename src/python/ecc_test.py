@@ -118,5 +118,21 @@ class ECCTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 Point(x, y, a,b)
 
+    def test_ex3_2(self):
+        prime = 223
+        a = FieldElement(0, prime)
+        b = FieldElement(7, prime)
+        points = [[(170, 142), (60, 139)], [(47, 71), (17, 56)], [(143, 98), (76, 66)]]
+        for x_raw, y_raw in points:
+            x1 = FieldElement(x_raw[0], prime)
+            y1 = FieldElement(x_raw[1], prime)
+            x2 = FieldElement(y_raw[0], prime)
+            y2 = FieldElement(y_raw[1], prime)
+            c = Point(x1, y1, a,b)
+            d = Point(x2, y2, a,b)
+            ans = c + d
+            print(ans.x, ans.y)
+
+
 if __name__ == "__main__":
     unittest.main()
