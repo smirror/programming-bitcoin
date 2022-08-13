@@ -2,6 +2,7 @@ import unittest
 from ecc import *
 from helper import hash256
 
+
 class ECCTest(unittest.TestCase):
     def test_eq(self):
         a = FieldElement(44, 57)
@@ -183,9 +184,10 @@ class ECCTest(unittest.TestCase):
 
     def test_ex3_7(self):
         e = 12345
-        z = int.from_bytes(hash256(b'Programming Bitcoin!'), 'big')
+        z = int.from_bytes(hash256(b"Programming Bitcoin!"), "big")
         pk = PrivateKey(e).sign(z)
         print(pk)
+
 
 if __name__ == "__main__":
     unittest.main()
