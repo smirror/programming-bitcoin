@@ -2,7 +2,7 @@ import unittest
 from ecc import *
 
 
-class MyTestCase(unittest.TestCase):
+class ECCTest(unittest.TestCase):
     def test_eq(self):
         a = FieldElement(44, 57)
         self.assertEqual(a == a, True)  # add assertion here
@@ -102,6 +102,21 @@ class MyTestCase(unittest.TestCase):
         a = Point(-1, -1, 5, 7)
         print((a + a).x, (a + a).y)
 
+    def test_ex3_1(self):
+        prime = 223
+        a = FieldElement(0, prime)
+        b = FieldElement(7, prime)
+        valid_points = [(192, 105), (17, 56), (1, 193)]
+        invalid_points = [(200, 119), (42, 99)]
+        for x_raw, y_raw in valid_points:
+            x = FieldElement(x_raw, prime)
+            y = FieldElement(y_raw, prime)
+            Point(x, y, a,b)
+        for  x_raw, y_raw in invalid_points:
+            x = FieldElement(x_raw, prime)
+            y = FieldElement(y_raw, prime)
+            with self.assertRaises(ValueError):
+                Point(x, y, a,b)
 
 if __name__ == "__main__":
     unittest.main()
