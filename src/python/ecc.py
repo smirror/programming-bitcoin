@@ -1,3 +1,9 @@
+import hashlib
+import hmac
+
+from rsa.randnum import randint
+
+
 class FieldElement(object):
     def __init__(self, num, prime):
         # if num < 0 or num >= prime:
@@ -58,7 +64,7 @@ class Point:
             return
 
         # secp256k1 curve
-        if self.y**2 != self.x**3 + a * x + b:
+        if self.y ** 2 != self.x ** 3 + a * x + b:
             raise ValueError("({}, {}) is not on the curve".format(x, y))
 
     def __eq__(self, other):
@@ -89,7 +95,7 @@ class Point:
 
         if self.x != other.x:
             s = (other.y - self.y) / (other.x - self.x)
-            x = s**2 - self.x - other.x
+            x = s ** 2 - self.x - other.x
             y = s * (self.x - x) - self.y
             return self.__class__(x, y, self.a, self.b)
 
@@ -97,8 +103,8 @@ class Point:
             return self.__class__(None, None, self.a, self.b)
 
         if self == other:
-            s = (3 * (self.x**2) + self.a) / (2 * self.y)
-            x = s**2 - 2 * self.x
+            s = (3 * (self.x ** 2) + self.a) / (2 * self.y)
+            x = s ** 2 - 2 * self.x
             y = s * (self.x - x) - self.y
             return self.__class__(x, y, self.a, self.b)
 
@@ -113,7 +119,7 @@ class Point:
         return result
 
 
-P = 2**256 - 2**32 - 977
+P = 2 ** 256 - 2 ** 32 - 977
 
 
 class S256Field(FieldElement):
@@ -148,6 +154,10 @@ class S256Point(Point):
         total = u * G + v * self
         return total.x.num == sig.r
 
+G = S256Point(
+    0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798,
+    0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8,
+)
 
 class Signature:
     def __init__(self, r, s):
@@ -155,10 +165,42 @@ class Signature:
         self.s = s
 
     def __repr__(self):
-        return "Signature({}, {})".format(self.r, self.s)
+        return "Signature({:x}, {:x})".format(self.r, self.s)
 
 
-G = S256Point(
-    0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798,
-    0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8,
-)
+class PrivateKey:
+    def __init__(self, secret):
+        self.secret = secret
+        self.point = secret * G
+
+    def hex(self):
+        return '{:x}'.format(self.secret).zfill(64)
+
+    def sign(self, z):
+        k = randint(N - 1)
+        r = (k * G).x.num
+        k_inv = pow(k, N - 2, N)
+        s = (z + r * self.secret) * k_inv % N
+        if s > N / 2:
+            s = N - s
+        return Signature(r, s)
+
+    def deterministic_generate(self, z):
+        k = b'\x00' * 32
+        v = b'\x01' * 32
+        if z > N:
+            z -= N
+        z_bytes = z.to_bytes(32, 'big')
+        secret_bytes = self.secret.to_bytes(32, 'big')
+        s256 = hashlib.sha256
+        k = hmac.new(k, v + b'\x00' + secret_bytes + z_bytes, s256).digest()
+        v = hmac.new(k, v, s256).digest()
+        k = hmac.new(k, v + b'\x01' + secret_bytes + z_bytes, s256).digest()
+        v = hmac.new(k, v, s256).digest()
+        while True:
+            v = hmac.new(k, v, s256).digest()
+            candidate = int.from_bytes(v, 'big')
+            if candidate >= 1 and candidate < N:
+                return candidate  # <2>
+            k = hmac.new(k, v + b'\x00', s256).digest()
+            v = hmac.new(k, v, s256).digest()

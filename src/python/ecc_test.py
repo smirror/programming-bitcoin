@@ -1,6 +1,6 @@
 import unittest
 from ecc import *
-
+from helper import hash256
 
 class ECCTest(unittest.TestCase):
     def test_eq(self):
@@ -181,6 +181,11 @@ class ECCTest(unittest.TestCase):
         s = 0xC7207FEE197D27C618AEA621406F6BF5EF6FCA38681D82B2F06FDDBDCE6FEAB6
         self.assertTrue(p.verify(z, Signature(r, s)))
 
+    def test_ex3_7(self):
+        e = 12345
+        z = int.from_bytes(hash256(b'Programming Bitcoin!'), 'big')
+        pk = PrivateKey(e).sign(z)
+        print(pk)
 
 if __name__ == "__main__":
     unittest.main()
