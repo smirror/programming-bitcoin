@@ -111,12 +111,12 @@ class ECCTest(unittest.TestCase):
         for x_raw, y_raw in valid_points:
             x = FieldElement(x_raw, prime)
             y = FieldElement(y_raw, prime)
-            Point(x, y, a,b)
-        for  x_raw, y_raw in invalid_points:
+            Point(x, y, a, b)
+        for x_raw, y_raw in invalid_points:
             x = FieldElement(x_raw, prime)
             y = FieldElement(y_raw, prime)
             with self.assertRaises(ValueError):
-                Point(x, y, a,b)
+                Point(x, y, a, b)
 
     def test_ex3_2(self):
         prime = 223
@@ -128,8 +128,8 @@ class ECCTest(unittest.TestCase):
             y1 = FieldElement(x_raw[1], prime)
             x2 = FieldElement(y_raw[0], prime)
             y2 = FieldElement(y_raw[1], prime)
-            c = Point(x1, y1, a,b)
-            d = Point(x2, y2, a,b)
+            c = Point(x1, y1, a, b)
+            d = Point(x2, y2, a, b)
             ans = c + d
             print(ans.x, ans.y)
 
