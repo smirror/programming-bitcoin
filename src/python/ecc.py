@@ -16,17 +16,17 @@ class FieldElement(object):
 
     def __add__(self, other):
         if self.prime != other.prime:
-            raise TypeError('Cannot add two numbers in different Fields')
+            raise TypeError("Cannot add two numbers in different Fields")
         return self.__class__((self.num + other.num) % self.prime, self.prime)
 
     def __sub__(self, other):
         if self.prime != other.prime:
-            raise TypeError('Cannot subtract two numbers in different Fields')
+            raise TypeError("Cannot subtract two numbers in different Fields")
         return self.__class__((self.num - other.num) % self.prime, self.prime)
 
     def __mul__(self, other):
         if self.prime != other.prime:
-            raise TypeError('Cannot multiply two numbers in different Fields')
+            raise TypeError("Cannot multiply two numbers in different Fields")
         return self.__class__((self.num * other.num) % self.prime, self.prime)
 
     def __pow__(self, n):
@@ -34,7 +34,7 @@ class FieldElement(object):
 
     def __truediv__(self, other):
         if self.prime != other.prime:
-            raise TypeError('Cannot divide two numbers in different Fields')
+            raise TypeError("Cannot divide two numbers in different Fields")
         num = (self.num * pow(other.num, self.prime - 2, self.prime)) % self.prime
         return self.__class__(num, self.prime)
 
@@ -44,6 +44,7 @@ class FieldElement(object):
     def __rmul__(self, coefficient):
         num = (self.num * coefficient) % self.prime
         return self.__class__(num, self.prime)
+
 
 class Point:
     def __init__(self, x, y, a, b):
@@ -57,7 +58,7 @@ class Point:
             return
 
         # secp256k1 curve
-        if self.y ** 2 != self.x ** 3 + a * x + b:
+        if self.y**2 != self.x**3 + a * x + b:
             raise ValueError("({}, {}) is not on the curve".format(x, y))
 
     def __eq__(self, other):
@@ -88,7 +89,7 @@ class Point:
 
         if self.x != other.x:
             s = (other.y - self.y) / (other.x - self.x)
-            x = s ** 2 - self.x - other.x
+            x = s**2 - self.x - other.x
             y = s * (self.x - x) - self.y
             return self.__class__(x, y, self.a, self.b)
 
@@ -96,8 +97,8 @@ class Point:
             return self.__class__(None, None, self.a, self.b)
 
         if self == other:
-            s = (3 * (self.x ** 2) + self.a) / (2 * self.y)
-            x = s ** 2 - 2 * self.x
+            s = (3 * (self.x**2) + self.a) / (2 * self.y)
+            x = s**2 - 2 * self.x
             y = s * (self.x - x) - self.y
             return self.__class__(x, y, self.a, self.b)
 

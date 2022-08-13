@@ -137,7 +137,14 @@ class ECCTest(unittest.TestCase):
         prime = 223
         a = FieldElement(0, prime)
         b = FieldElement(7, prime)
-        points = [(2, 192, 105), (2, 143, 98), (2, 47, 71), (4, 47, 71), (8, 47, 71), (21, 47, 71)]
+        points = [
+            (2, 192, 105),
+            (2, 143, 98),
+            (2, 47, 71),
+            (4, 47, 71),
+            (8, 47, 71),
+            (21, 47, 71),
+        ]
         for c, x_raw, y_raw in points:
             x = FieldElement(x_raw, prime)
             y = FieldElement(y_raw, prime)
@@ -153,6 +160,7 @@ class ECCTest(unittest.TestCase):
         y = FieldElement(86, prime)
         p = Point(x, y, a, b)
         print(7 * p)
+
 
 if __name__ == "__main__":
     unittest.main()
