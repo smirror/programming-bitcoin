@@ -133,6 +133,26 @@ class ECCTest(unittest.TestCase):
             ans = c + d
             print(ans.x, ans.y)
 
+    def test_ex3_4(self):
+        prime = 223
+        a = FieldElement(0, prime)
+        b = FieldElement(7, prime)
+        points = [(2, 192, 105), (2, 143, 98), (2, 47, 71), (4, 47, 71), (8, 47, 71), (21, 47, 71)]
+        for c, x_raw, y_raw in points:
+            x = FieldElement(x_raw, prime)
+            y = FieldElement(y_raw, prime)
+            d = Point(x, y, a, b)
+            ans = c * d
+            print(ans.x, ans.y)
+
+    def test_ex3_5(self):
+        prime = 223
+        a = FieldElement(0, prime)
+        b = FieldElement(7, prime)
+        x = FieldElement(15, prime)
+        y = FieldElement(86, prime)
+        p = Point(x, y, a, b)
+        print(7 * p)
 
 if __name__ == "__main__":
     unittest.main()
