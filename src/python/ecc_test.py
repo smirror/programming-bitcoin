@@ -187,7 +187,7 @@ class ECCTest(unittest.TestCase):
         z = int.from_bytes(hash256(b"Programming Bitcoin!"), "big")
         pk = PrivateKey(e).sign(z)
         print(pk)
-        print((e*G).verify(z, pk))
+        print((e * G).verify(z, pk))
 
 
 if __name__ == "__main__":
