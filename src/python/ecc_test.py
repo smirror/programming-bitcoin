@@ -201,6 +201,18 @@ class ECCTest(unittest.TestCase):
         priv = PrivateKey(0xDEADBEEF12345)
         print(priv.point.sec(compressed=False).hex())
 
+    def test_ex4_2_1(self):
+        priv = PrivateKey(5001)
+        print(priv.point.sec(compressed=False).hex())
+
+    def test_ex4_2_2(self):
+        priv = PrivateKey(pow(2019, 5))
+        print(priv.point.sec(compressed=False).hex())
+
+    def test_ex4_2_3(self):
+        priv = PrivateKey(0xDEADBEEF54321)
+        print(priv.point.sec(compressed=False).hex())
+
 
 if __name__ == "__main__":
     unittest.main()
