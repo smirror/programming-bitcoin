@@ -64,7 +64,7 @@ class Point:
             return
 
         # secp256k1 curve
-        if self.y**2 != self.x**3 + a * x + b:
+        if self.y ** 2 != self.x ** 3 + a * x + b:
             raise ValueError("({}, {}) is not on the curve".format(x, y))
 
     def __eq__(self, other):
@@ -95,7 +95,7 @@ class Point:
 
         if self.x != other.x:
             s = (other.y - self.y) / (other.x - self.x)
-            x = s**2 - self.x - other.x
+            x = s ** 2 - self.x - other.x
             y = s * (self.x - x) - self.y
             return self.__class__(x, y, self.a, self.b)
 
@@ -103,8 +103,8 @@ class Point:
             return self.__class__(None, None, self.a, self.b)
 
         if self == other:
-            s = (3 * (self.x**2) + self.a) / (2 * self.y)
-            x = s**2 - 2 * self.x
+            s = (3 * (self.x ** 2) + self.a) / (2 * self.y)
+            x = s ** 2 - 2 * self.x
             y = s * (self.x - x) - self.y
             return self.__class__(x, y, self.a, self.b)
 
@@ -119,7 +119,7 @@ class Point:
         return result
 
 
-P = 2**256 - 2**32 - 977
+P = 2 ** 256 - 2 ** 32 - 977
 
 
 class S256Field(FieldElement):
@@ -153,6 +153,19 @@ class S256Point(Point):
         v = sig.r * s_inv % N
         total = u * G + v * self
         return total.x.num == sig.r
+
+    def sec(self, compressed=True):
+        """
+        SECフォーマットをバイナリ形式で返す
+        """
+        if compressed:
+            if self.y.num % 2:
+                return b'\x03' + self.x.num.to_bytes(32, 'big')
+            else:
+                return b'\x02' + self.x.num.to_bytes(32, 'big')
+        else:
+            return b'\x04' + self.x.num.to_bytes(32, 'big') \
+                   + self.y.num.to_bytes(32, 'big')
 
 
 G = S256Point(

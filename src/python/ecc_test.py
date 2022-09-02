@@ -189,6 +189,18 @@ class ECCTest(unittest.TestCase):
         print(pk)
         print((e * G).verify(z, pk))
 
+    def test_ex4_1_1(self):
+        priv = PrivateKey(5000)
+        print(priv.point.sec(compressed=False).hex())
+
+    def test_ex4_1_2(self):
+        priv = PrivateKey(pow(2018, 5))
+        print(priv.point.sec(compressed=False).hex())
+
+    def test_ex4_1_3(self):
+        priv = PrivateKey(0xdeadbeef12345)
+        print(priv.point.sec(compressed=False).hex())
+
 
 if __name__ == "__main__":
     unittest.main()
