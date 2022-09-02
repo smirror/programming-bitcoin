@@ -1,6 +1,6 @@
 import unittest
 from ecc import *
-from helper import hash256
+from helper import *
 
 
 class ECCTest(unittest.TestCase):
@@ -218,6 +218,18 @@ class ECCTest(unittest.TestCase):
         s = 0x8CA63759C1157EBEAEC0D03CECCA119FC9A75BF8E6D0FA65C841C8E2738CDAEC
         sig = Signature(r, s)
         print(sig.der().hex())
+
+    def test_ex4_4_1(self):
+        h = '7c076ff316692a3d7eb3c3bb0f8b1488cf72e1afcd929e29307032997a838a3d'
+        print(encode_base58(bytes.fromhex(h)))
+
+    def test_ex4_4_2(self):
+        h = 'eff69ef2b1bd93a66ed5219add4fb51e11a840f404876325a1e8ffe0529a2c'
+        print(encode_base58(bytes.fromhex(h)))
+
+    def test_ex4_4_2(self):
+        h = 'c7207fee197d27c618aea621406f6bf5ef6fca38681d82b2f06fddbdce6feab6'
+        print(encode_base58(bytes.fromhex(h)))
 
 
 if __name__ == "__main__":
