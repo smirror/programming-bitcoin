@@ -214,8 +214,8 @@ class ECCTest(unittest.TestCase):
         print(priv.point.sec(compressed=False).hex())
 
     def test_ex4_3(self):
-        r = 0x37206a0610995c58074999cb9767b87af4c4978db68c06e8e6e81d282047a7c6
-        s = 0x8ca63759c1157ebeaec0d03cecca119fc9a75bf8e6d0fa65c841c8e2738cdaec
+        r = 0x37206A0610995C58074999CB9767B87AF4C4978DB68C06E8E6E81D282047A7C6
+        s = 0x8CA63759C1157EBEAEC0D03CECCA119FC9A75BF8E6D0FA65C841C8E2738CDAEC
         sig = Signature(r, s)
         print(sig.der().hex())
 
