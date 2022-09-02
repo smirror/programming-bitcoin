@@ -198,7 +198,7 @@ class ECCTest(unittest.TestCase):
         print(priv.point.sec(compressed=False).hex())
 
     def test_ex4_1_3(self):
-        priv = PrivateKey(0xdeadbeef12345)
+        priv = PrivateKey(0xDEADBEEF12345)
         print(priv.point.sec(compressed=False).hex())
 
 
