@@ -2,7 +2,7 @@ from unittest import TestSuite, TextTestRunner
 
 import hashlib
 
-BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+BASE58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 
 
 def run(test):
@@ -23,9 +23,9 @@ def encode_base58(s):
             count += 1
         else:
             break
-    num = int.from_bytes(s, 'big')
-    prefix = '1' * count
-    result = ''
+    num = int.from_bytes(s, "big")
+    prefix = "1" * count
+    result = ""
     while num > 0:
         num, mod = divmod(num, 58)
         result = BASE58_ALPHABET[mod] + result
