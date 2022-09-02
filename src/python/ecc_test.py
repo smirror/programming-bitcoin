@@ -240,7 +240,7 @@ class ECCTest(unittest.TestCase):
         print(priv.point.address(compressed=False, testnet=True))
 
     def test_ex4_5_1(self):
-        priv = PrivateKey(0x12345deadbeef)
+        priv = PrivateKey(0x12345DEADBEEF)
         print(priv.point.address(compressed=False, testnet=True))
 
 

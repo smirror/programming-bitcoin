@@ -15,7 +15,7 @@ def hash160(s):
     """
     sha256の後にripemd160が続く
     """
-    return hashlib.new('ripemd160', hashlib.sha256(s).digest()).digest()
+    return hashlib.new("ripemd160", hashlib.sha256(s).digest()).digest()
 
 
 def hash256(s):
