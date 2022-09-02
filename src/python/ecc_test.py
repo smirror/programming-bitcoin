@@ -231,6 +231,18 @@ class ECCTest(unittest.TestCase):
         h = "c7207fee197d27c618aea621406f6bf5ef6fca38681d82b2f06fddbdce6feab6"
         print(encode_base58(bytes.fromhex(h)))
 
+    def test_ex4_5_1(self):
+        priv = PrivateKey(5002)
+        print(priv.point.address(compressed=False, testnet=True))
+
+    def test_ex4_5_2(self):
+        priv = PrivateKey(pow(2020, 5))
+        print(priv.point.address(compressed=False, testnet=True))
+
+    def test_ex4_5_1(self):
+        priv = PrivateKey(0x12345deadbeef)
+        print(priv.point.address(compressed=False, testnet=True))
+
 
 if __name__ == "__main__":
     unittest.main()
