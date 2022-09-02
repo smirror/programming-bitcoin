@@ -3,7 +3,7 @@ import hmac
 
 from rsa.randnum import randint
 
-from python.helper import *
+from helper import *
 
 
 class FieldElement(object):
