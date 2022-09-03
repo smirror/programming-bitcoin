@@ -41,3 +41,19 @@ def encode_base58(s):
 
 def encode_base58_checksum(b):
     return encode_base58(b + hash256(b)[:4])
+
+
+def little_endian_to_int(b):
+    """
+    little_endian_to_int takes byte sequence as a little-endian number.
+    Returns an integer
+    """
+    return int.from_bytes(b, 'little')
+
+
+def int_to_little_endian(n, length):
+    """
+    little_endian_to_int takes byte sequence as a little-endian number.
+    Returns an integer
+    """
+    return n.to_bytes(length, 'little')
