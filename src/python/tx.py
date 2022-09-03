@@ -1,4 +1,4 @@
-from helper import hash256
+from helper import *
 
 
 class Tx:
@@ -33,5 +33,6 @@ class Tx:
         return hash256(self.serialize())[::-1]
 
     @classmethod
-    def parse(cls, serialization):
-        version = serialization.read(4)
+    def parse(cls, serialization, testnet=False):
+        version = little_endian_to_int(serialization.read(4))
+        return cls(version, None, None, None, testnet)
