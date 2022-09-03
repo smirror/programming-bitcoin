@@ -57,13 +57,13 @@ def read_varint(s):
     """
     i = s.read(1)[0]
     # 数値はlittle endian
-    if i == 0xfd:
+    if i == 0xFD:
         # 0xfdは次の2バイトがデータ長であることを示す
         return little_endian_to_int(s.read(2))
-    elif i == 0xfe:
+    elif i == 0xFE:
         # 0xfeは次の4バイトがデータ長であることを示す
         return little_endian_to_int(s.read(4))
-    elif i == 0xff:
+    elif i == 0xFF:
         # 0xffは次の8バイトがデータ長であることを示す
         return little_endian_to_int(s.read(8))
     else:
@@ -76,7 +76,7 @@ def encode_varint(i):
     整数をvarintとしてエンコードする
     """
 
-    if i < 0xfd:
+    if i < 0xFD:
         return bytes([i])
     elif i < 0x10000:
         return b"\xfd" + int_to_little_endian(i, 2)
