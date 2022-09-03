@@ -10,18 +10,14 @@ class Tx:
         self.testnet = testnet
 
     def __repr__(self):
-        tx_ins = ''
+        tx_ins = ""
         for tx_in in self.tx_ins:
-            tx_ins += tx_in.__repr__() + '\n'
-        tx_outs = ''
+            tx_ins += tx_in.__repr__() + "\n"
+        tx_outs = ""
         for tx_out in tx_outs:
-            tx_outs + tx_out.__repr__() + '\n'
-        return 'Tx: {}\nversion: {}\nTx_ins:\n{}\nTx_outs:\n{}\nLocktime: {}'.format(
-            self.id(),
-            self.version,
-            tx_ins,
-            tx_outs,
-            self.locktime
+            tx_outs + tx_out.__repr__() + "\n"
+        return "Tx: {}\nversion: {}\nTx_ins:\n{}\nTx_outs:\n{}\nLocktime: {}".format(
+            self.id(), self.version, tx_ins, tx_outs, self.locktime
         )
 
     def id(self):
