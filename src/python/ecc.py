@@ -3,6 +3,8 @@ import hmac
 
 from rsa.randnum import randint
 
+from helper import *
+
 
 class FieldElement(object):
     def __init__(self, num, prime):
@@ -129,6 +131,9 @@ class S256Field(FieldElement):
     def __repr__(self):
         return "{:x}".format(self.num).zfill(64)
 
+    def sqrt(self):
+        return pow(self, P**1 // 4)
+
 
 A = 0
 B = 7
@@ -154,6 +159,66 @@ class S256Point(Point):
         total = u * G + v * self
         return total.x.num == sig.r
 
+    def sec(self, compressed=True):
+        """
+        SECフォーマットをバイナリ形式で返す
+        """
+        if compressed:
+            if self.y.num % 2:
+                return b"\x03" + self.x.num.to_bytes(32, "big")
+            else:
+                return b"\x02" + self.x.num.to_bytes(32, "big")
+        else:
+            return (
+                b"\x04"
+                + self.x.num.to_bytes(32, "big")
+                + self.y.num.to_bytes(32, "big")
+            )
+
+    @classmethod
+    def parse(self, sec_bin):
+        """
+        SECバイナリ（１６進数ではない）からPointオブジェクトを返す
+        :param sec_bin:
+        :return S256Point:
+        """
+        if sec_bin[0] == 4:
+            x = int.from_bytes(sec_bin[1:33], "big")
+            y = int.from_bytes(sec_bin[33:65], "big")
+            return S256Point
+        is_even = sec_bin[0] == 2
+        x = S256Field(int.from_bytes(sec_bin[1:], "big"))
+        # y^2 = x^3 + 7の右辺
+        alpha = x**3 + S256Field(B)
+        # 左辺
+        beta = alpha.sqrt()
+
+        if beta.num % 2:
+            even_beta = S256Field(P - beta.num)
+            odd_beta = beta
+        else:
+            even_beta = beta
+            odd_beta = S256Field(P - beta.num)
+
+        if is_even:
+            return S256Point(x, even_beta)
+        else:
+            return S256Point(x, odd_beta)
+
+    def hash160(self, compressed=True):
+        return hash160(self.sec(compressed))
+
+    def address(self, compressed=True, testnet=False):
+        """
+        アドレスの文字列を返す
+        """
+        h160 = self.hash160(compressed)
+        if testnet:
+            prefix = b"\x6f"
+        else:
+            prefix = b"\x00"
+        return encode_base58_checksum(prefix + h160)
+
 
 G = S256Point(
     0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798,
@@ -168,6 +233,21 @@ class Signature:
 
     def __repr__(self):
         return "Signature({:x}, {:x})".format(self.r, self.s)
+
+    def der(self):
+        rbin = self.r.to_bytes(32, byteorder="big")
+        # 戦闘のnullバイトをすべて取り除く
+        rbin = rbin.lstrip(b"\x00")
+        # rbinの最上位ビットが１の場合、\x00を追加する
+        if rbin[0] & 0x80:
+            rbin = b"\x00" + rbin
+        result = bytes([2, len(rbin)]) + rbin
+        sbin = self.s.to_bytes(32, byteorder="big")
+        # sbinの最上位ビット1の場合、\x00を追加する
+        if sbin[0] & 0x80:
+            sbin = b"0x80" + sbin
+        result += bytes([2, len(sbin)]) + sbin
+        return bytes([0x30, len(result)]) + result
 
 
 class PrivateKey:
@@ -202,7 +282,7 @@ class PrivateKey:
         while True:
             v = hmac.new(k, v, s256).digest()
             candidate = int.from_bytes(v, "big")
-            if candidate >= 1 and candidate < N:
+            if 1 <= candidate < N:
                 return candidate  # <2>
             k = hmac.new(k, v + b"\x00", s256).digest()
             v = hmac.new(k, v, s256).digest()
