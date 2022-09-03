@@ -51,7 +51,7 @@ def int_to_little_endian(n, length):
     return n.to_bytes(length, "little")
 
 
-def rand_varint(s):
+def read_varint(s):
     """
     ストリームから可変長の整数を読み取る
     """
