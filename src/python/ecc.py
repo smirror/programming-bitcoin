@@ -1,9 +1,12 @@
-import hashlib
 import hmac
 
 from rsa.randnum import randint
 
-from helper import *
+from helper import (
+    hash160,
+    hashlib,
+    encode_base58_checksum,
+)
 
 
 class FieldElement(object):
@@ -66,7 +69,7 @@ class Point:
             return
 
         # secp256k1 curve
-        if self.y**2 != self.x**3 + a * x + b:
+        if self.y ** 2 != self.x ** 3 + a * x + b:
             raise ValueError("({}, {}) is not on the curve".format(x, y))
 
     def __eq__(self, other):
@@ -97,7 +100,7 @@ class Point:
 
         if self.x != other.x:
             s = (other.y - self.y) / (other.x - self.x)
-            x = s**2 - self.x - other.x
+            x = s ** 2 - self.x - other.x
             y = s * (self.x - x) - self.y
             return self.__class__(x, y, self.a, self.b)
 
@@ -105,8 +108,8 @@ class Point:
             return self.__class__(None, None, self.a, self.b)
 
         if self == other:
-            s = (3 * (self.x**2) + self.a) / (2 * self.y)
-            x = s**2 - 2 * self.x
+            s = (3 * (self.x ** 2) + self.a) / (2 * self.y)
+            x = s ** 2 - 2 * self.x
             y = s * (self.x - x) - self.y
             return self.__class__(x, y, self.a, self.b)
 
@@ -121,7 +124,7 @@ class Point:
         return result
 
 
-P = 2**256 - 2**32 - 977
+P = 2 ** 256 - 2 ** 32 - 977
 
 
 class S256Field(FieldElement):
@@ -132,7 +135,7 @@ class S256Field(FieldElement):
         return "{:x}".format(self.num).zfill(64)
 
     def sqrt(self):
-        return pow(self, P**1 // 4)
+        return pow(self, P ** 1 // 4)
 
 
 A = 0
@@ -189,7 +192,7 @@ class S256Point(Point):
         is_even = sec_bin[0] == 2
         x = S256Field(int.from_bytes(sec_bin[1:], "big"))
         # y^2 = x^3 + 7の右辺
-        alpha = x**3 + S256Field(B)
+        alpha = x ** 3 + S256Field(B)
         # 左辺
         beta = alpha.sqrt()
 

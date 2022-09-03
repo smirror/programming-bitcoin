@@ -1,4 +1,8 @@
-from helper import *
+from helper import (
+    hash256,
+    little_endian_to_int,
+    read_varint,
+)
 from script import Script
 
 
