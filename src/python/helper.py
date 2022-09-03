@@ -55,4 +55,3 @@ def int_to_little_endian(n, length):
     Returns an integer
     """
     return n.to_bytes(length, "little")
-
