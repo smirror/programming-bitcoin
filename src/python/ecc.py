@@ -1,9 +1,12 @@
-import hashlib
 import hmac
+import hashlib
 
 from rsa.randnum import randint
 
-from helper import *
+from helper import (
+    hash160,
+    encode_base58_checksum,
+)
 
 
 class FieldElement(object):
@@ -185,7 +188,7 @@ class S256Point(Point):
         if sec_bin[0] == 4:
             x = int.from_bytes(sec_bin[1:33], "big")
             y = int.from_bytes(sec_bin[33:65], "big")
-            return S256Point
+            return S256Point(x, y)
         is_even = sec_bin[0] == 2
         x = S256Field(int.from_bytes(sec_bin[1:], "big"))
         # y^2 = x^3 + 7の右辺
