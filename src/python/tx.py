@@ -83,7 +83,9 @@ class TxOut:
         self.script_pubkey = script_pubkey
 
     def __repr__(self):
-        return "TxOut(amount:{}, script_pubkey:{})".format(self.amount, self.script_pubkey)
+        return "TxOut(amount:{}, script_pubkey:{})".format(
+            self.amount, self.script_pubkey
+        )
 
     @classmethod
     def parse(cls, s):
