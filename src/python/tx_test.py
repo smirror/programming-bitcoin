@@ -77,7 +77,7 @@ class TxTestCase(unittest.TestCase):
         self.assertEqual(tx.fee(), 140500)
 
     def test_ex5_5(self):
-        hex_transaction = '010000000456919960ac691763688d3d3bcea9ad6ecaf875df5339e\
+        hex_transaction = "010000000456919960ac691763688d3d3bcea9ad6ecaf875df5339e\
         148a1fc61c6ed7a069e010000006a47304402204585bcdef85e6b1c6af5c2669d4830ff86e42dd\
         205c0e089bc2a821657e951c002201024a10366077f87d6bce1f7100ad8cfa8a064b39d4e8fe4e\
         a13a7b71aa8180f012102f0da57e85eec2934a82a585ea337ce2f4998b50ae699dd79f5880e253\
@@ -94,7 +94,7 @@ class TxTestCase(unittest.TestCase):
         852028751635dcee2be669c2a1686a4b5edf304012103ffd6f4a67e94aba353a00882e563ff272\
         2eb4cff0ad6006e86ee20dfe7520d55feffffff0251430f00000000001976a914ab0c0b2e98b1a\
         b6dbf67d4750b0a56244948a87988ac005a6202000000001976a9143c82d7df364eb6c75be8c80\
-        df2b3eda8db57397088ac46430600'
+        df2b3eda8db57397088ac46430600"
         stream = BytesIO(bytes.fromhex(hex_transaction))
         tx_obj = Tx.parse(stream)
         print(tx_obj.tx_ins[1].script_sig)

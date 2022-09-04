@@ -1,7 +1,9 @@
 from helper import (
     hash256,
     little_endian_to_int,
-    read_varint, int_to_little_endian, encode_varint,
+    read_varint,
+    int_to_little_endian,
+    encode_varint,
 )
 from script import Script
 
