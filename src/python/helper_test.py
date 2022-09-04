@@ -1,9 +1,6 @@
 from unittest import TestCase
 
-from helper import (
-    little_endian_to_int,
-    int_to_little_endian
-)
+from helper import little_endian_to_int, int_to_little_endian
 
 
 class HelperTest(TestCase):
