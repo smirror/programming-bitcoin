@@ -44,7 +44,11 @@ class Tx:
         inputs = []
         for _ in range(num_inputs):
             inputs.append(TxIn.parse(s))
-        return cls(version, inputs, None, None, testnet=testnet)
+        num_outputs = read_varint(s)
+        outputs = []
+        for _ in range(num_outputs):
+            outputs.append(TxOut.parse(s))
+        return cls(version, inputs, outputs, None, testnet=testnet)
 
 
 class TxIn:
@@ -71,3 +75,22 @@ class TxIn:
         script_sig = Script.parse(s)
         sequence = little_endian_to_int(s.read(4))
         return cls(prev_tx, prev_index, script_sig, sequence)
+
+
+class TxOut:
+    def __init__(self, amount, script_pubkey):
+        self.amout = amount
+        self.script_pubkey = script_pubkey
+
+    def __repr__(self):
+        return "TxOut(amount:{}, script_pubkey:{})".format(self.amount, self.script_pubkey)
+
+    @classmethod
+    def parse(cls, s):
+        """
+        Takes a byte stream and parses the tx_output at the start.
+        Returns a TxOut object.
+        """
+        amount = little_endian_to_int(s.read(8))
+        script_pubkey = Script.parse(s)
+        return cls(amount, script_pubkey)
