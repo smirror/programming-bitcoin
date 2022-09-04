@@ -1,10 +1,10 @@
 import hmac
+import hashlib
 
 from rsa.randnum import randint
 
 from helper import (
     hash160,
-    hashlib,
     encode_base58_checksum,
 )
 
