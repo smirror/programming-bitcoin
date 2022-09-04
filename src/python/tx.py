@@ -72,6 +72,14 @@ class Tx:
         result += int_to_little_endian(self.locktime, 4)
         return result
 
+    def fee(self, testnet=False):
+        input_sum, output_sum = 0, 0
+        for tx_in in self.tx_ins:
+            input_sum += tx_in.value(testnet=testnet)
+        for tx_out in self.tx_outs:
+            output_sum += tx_out.amount
+        return input_sum - output_sum
+
 
 class TxIn:
     def __init__(self, prev_tx, prev_index, script_sig, sequence):
@@ -128,7 +136,7 @@ class TxIn:
 
 class TxOut:
     def __init__(self, amount, script_pubkey):
-        self.amout = amount
+        self.amount = amount
         self.script_pubkey = script_pubkey
 
     def __repr__(self):
