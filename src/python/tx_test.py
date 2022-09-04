@@ -1,7 +1,9 @@
 import unittest
 from io import BytesIO
 
-from tx import Tx
+from tx import (
+    Tx, TxFetcher
+)
 
 
 class TxTestCase(unittest.TestCase):
