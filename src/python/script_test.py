@@ -28,5 +28,5 @@ class ScriptTest(unittest.TestCase):
         self.assertEqual(script.serialize().hex(), want)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     ScriptTest.main()
