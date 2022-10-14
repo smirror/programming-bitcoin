@@ -37,6 +37,9 @@ class Script:
                 result.append(cmd.hex())
         return " ".join(result)
 
+    def __add__(self, other):
+        return Script(self.cmds + other.cmds)
+
     @classmethod
     def parse(cls, s):
         # get the length of the entire field
