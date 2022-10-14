@@ -78,7 +78,7 @@ class ScriptTest(unittest.TestCase):
         0901d5df45c14f26fedfb3dc38e96ac22fe7bd728f0e45bce046d23c570feb141398bb552ef5a0\
         a82be331fea48037b8b5d71f0e332edf93ac3500eb4ddc0decc1a864790c782c76215660dd3097\
         91d06bd0af3f98cda4bc4629b1"
-        collision1 = bytes.fromhex(c1)  # <1>
+        collision1 = bytes.fromhex(c1)
         collision2 = bytes.fromhex(c2)
         script_sig = Script([collision1, collision2])
         combined_script = script_sig + script_pubkey
