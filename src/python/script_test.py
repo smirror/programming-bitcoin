@@ -27,6 +27,24 @@ class ScriptTest(unittest.TestCase):
         script = Script.parse(script_pubkey)
         self.assertEqual(script.serialize().hex(), want)
 
+    def test_ex6_3(self):
+        """
+        Create a ScriptSig that can unlock this ScriptPubKey:
+        ----
+        767695935687
+        ----
+        Note that `OP_MUL` multiplies the top two elements of the stack.
+        * `56 = OP_6`
+        * `76 = OP_DUP`
+        * `87 = OP_EQUAL`
+        * `93 = OP_ADD`
+        * `95 = OP_MUL`
+        """
+        script_pubkey = Script([0x76, 0x76, 0x95, 0x93, 0x56, 0x87])
+        script_sig = Script([0x52])
+        combined_script = script_sig + script_pubkey
+        self.assertEqual(combined_script.evaluate(0), True)
+
 
 if __name__ == "__main__":
     ScriptTest.main()
