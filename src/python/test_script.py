@@ -1,238 +1,89 @@
-import pytest
-from ecc import *
-from helper import *
+import unittest
+from io import BytesIO
 
-def test_eq():
-    a = FieldElement(44, 57)
-    assert a == a
+from script import Script
 
-def test_eq_diff():
-    a = FieldElement(44, 57)
-    b = FieldElement(33, 57)
-    assert a != b
 
-def test_ex1_2_1():
-    a = FieldElement(44, 57)
-    b = FieldElement(33, 57)
-    c = FieldElement(20, 57)
-    assert a + b == c
+class ScriptTest(unittest.TestCase):
+    def test_parse(self):
+        script_pubkey = BytesIO(
+            bytes.fromhex(
+                "6a47304402207899531a52d59a6de200179928ca900254a36b8dff8bb75f5f5d71b1cdc26125022008b422690b8461cb52c3cc30330b23d574351872b7c361e9aae3649071c1a7160121035d5c93d9ac96881f19ba1f686f15f009ded7c62efe85a872e6a19b43c15a2937"
+            )
+        )
+        script = Script.parse(script_pubkey)
+        want = bytes.fromhex(
+            "304402207899531a52d59a6de200179928ca900254a36b8dff8bb75f5f5d71b1cdc26125022008b422690b8461cb52c3cc30330b23d574351872b7c361e9aae3649071c1a71601"
+        )
+        self.assertEqual(script.cmds[0].hex(), want.hex())
+        want = bytes.fromhex(
+            "035d5c93d9ac96881f19ba1f686f15f009ded7c62efe85a872e6a19b43c15a2937"
+        )
+        self.assertEqual(script.cmds[1], want)
 
-def test_ex1_2_2():
-    a = FieldElement(9, 57)
-    b = FieldElement(29, 57)
-    c = FieldElement(-20, 57)
-    assert a - b == c
+    def test_serialize(self):
+        want = "6a47304402207899531a52d59a6de200179928ca900254a36b8dff8bb75f5f5d71b1cdc26125022008b422690b8461cb52c3cc30330b23d574351872b7c361e9aae3649071c1a7160121035d5c93d9ac96881f19ba1f686f15f009ded7c62efe85a872e6a19b43c15a2937"
+        script_pubkey = BytesIO(bytes.fromhex(want))
+        script = Script.parse(script_pubkey)
+        self.assertEqual(script.serialize().hex(), want)
 
-def test_ex1_2_3():
-    a = FieldElement(17, 57)
-    b = FieldElement(42, 57)
-    c = FieldElement(49, 57)
-    assert a + b + c == FieldElement(51, 57)
+    def test_ex6_3(self):
+        """
+        Create a ScriptSig that can unlock this ScriptPubKey:
+        ----
+        767695935687
+        ----
+        Note that `OP_MUL` multiplies the top two elements of the stack.
+        * `56 = OP_6`
+        * `76 = OP_DUP`
+        * `87 = OP_EQUAL`
+        * `93 = OP_ADD`
+        * `95 = OP_MUL`
+        """
+        script_pubkey = Script([0x76, 0x76, 0x95, 0x93, 0x56, 0x87])
+        script_sig = Script([0x52])
+        combined_script = script_sig + script_pubkey
+        self.assertEqual(combined_script.evaluate(0), True)
 
-def test_ex1_2_4():
-    a = FieldElement(52, 57)
-    b = FieldElement(30, 57)
-    c = FieldElement(38, 57)
-    assert a - b - c == FieldElement(41, 57)
+    def test_ex6_4(self):
+        """
+        Figure out what this script is doing:
+        ----
+        6e879169a77ca787
+        ----
+        * `69 = OP_VERIFY`
+        * `6e = OP_2DUP`
+        * `7c = OP_SWAP`
+        * `87 = OP_EQUAL`
+        * `91 = OP_NOT`
+        * `a7 = OP_SHA1`
+        Use the `Script.parse` method and look up what various opcodes do at https://en.bitcoin.it/wiki/Script[].
+        """
+        script_pubkey = Script([0x6E, 0x87, 0x91, 0x69, 0xA7, 0x7C, 0xA7, 0x87])
+        c1 = "255044462d312e330a25e2e3cfd30a0a0a312030206f626a0a3c3c2f576964746820\
+        32203020522f4865696768742033203020522f547970652034203020522f537562747970652035\
+        203020522f46696c7465722036203020522f436f6c6f7253706163652037203020522f4c656e67\
+        74682038203020522f42697473506572436f6d706f6e656e7420383e3e0a73747265616d0affd8\
+        fffe00245348412d3120697320646561642121212121852fec092339759c39b1a1c63c4c97e1ff\
+        fe017f46dc93a6b67e013b029aaa1db2560b45ca67d688c7f84b8c4c791fe02b3df614f86db169\
+        0901c56b45c1530afedfb76038e972722fe7ad728f0e4904e046c230570fe9d41398abe12ef5bc\
+        942be33542a4802d98b5d70f2a332ec37fac3514e74ddc0f2cc1a874cd0c78305a215664613097\
+        89606bd0bf3f98cda8044629a1"
+        c2 = "255044462d312e330a25e2e3cfd30a0a0a312030206f626a0a3c3c2f576964746820\
+        32203020522f4865696768742033203020522f547970652034203020522f537562747970652035\
+        203020522f46696c7465722036203020522f436f6c6f7253706163652037203020522f4c656e67\
+        74682038203020522f42697473506572436f6d706f6e656e7420383e3e0a73747265616d0affd8\
+        fffe00245348412d3120697320646561642121212121852fec092339759c39b1a1c63c4c97e1ff\
+        fe017346dc9166b67e118f029ab621b2560ff9ca67cca8c7f85ba84c79030c2b3de218f86db3a9\
+        0901d5df45c14f26fedfb3dc38e96ac22fe7bd728f0e45bce046d23c570feb141398bb552ef5a0\
+        a82be331fea48037b8b5d71f0e332edf93ac3500eb4ddc0decc1a864790c782c76215660dd3097\
+        91d06bd0af3f98cda4bc4629b1"
+        collision1 = bytes.fromhex(c1)
+        collision2 = bytes.fromhex(c2)
+        script_sig = Script([collision1, collision2])
+        combined_script = script_sig + script_pubkey
+        self.assertEqual(combined_script.evaluate(0), True)
 
-def test_ex1_3_1():
-    a = FieldElement(95, 97)
-    b = FieldElement(45, 97)
-    c = FieldElement(31, 97)
-    assert a * b * c == FieldElement(23, 97)
 
-def test_ex1_3_2():
-    a = FieldElement(17, 97)
-    b = FieldElement(13, 97)
-    c = FieldElement(19, 97)
-    d = FieldElement(44, 97)
-    assert a * b * c * d == FieldElement(68, 97)
-
-def test_ex1_3_3():
-    a = FieldElement(12, 97)
-    b = FieldElement(77, 97)
-    assert pow(a, 7) * pow(b, 49) == FieldElement(63, 97)
-
-def test_ex1_5():
-    for i in [1, 3, 7, 13, 18]:
-        FieldList = [FieldElement(i * k, 19) for k in range(19)]
-        print(FieldList)
-
-def test_ex1_7():
-    for p in [7, 11, 17, 31]:
-        FieldList = [pow(FieldElement(i, p), p - 1) for i in range(1, p)]
-        print(FieldList)
-
-def test_ex1_8_1():
-    a = FieldElement(3, 31)
-    b = FieldElement(24, 31)
-    assert a / b == FieldElement(4, 31)
-
-def test_ex1_8_2():
-    a = FieldElement(17, 31)
-    assert pow(a, -3) == FieldElement(29, 31)
-
-def test_ex1_8_3():
-    a = FieldElement(4, 31)
-    b = FieldElement(11, 31)
-    assert pow(a, -4) * b == FieldElement(13, 31)
-
-def test_ex2_1():
-    for i, xy in enumerate([(2, 4), (-1, -1), (18, 77), (5, 7)]):
-        x, y = xy
-        if i == 0 or i == 3:
-            with pytest.raises(ValueError):
-                Point(x, y, 5, 7)
-        else:
-            point = Point(x, y, 5, 7)
-            print(point)
-
-def test_ex2_4():
-    a = Point(2, 5, 5, 7)
-    b = Point(-1, -1, 5, 7)
-    print((a + b).x, (a + b).y)
-
-def test_ex2_6():
-    a = Point(-1, -1, 5, 7)
-    print((a + a).x, (a + a).y)
-
-def test_ex3_1():
-    prime = 223
-    a = FieldElement(0, prime)
-    b = FieldElement(7, prime)
-    valid_points = [(192, 105), (17, 56), (1, 193)]
-    invalid_points = [(200, 119), (42, 99)]
-    for x_raw, y_raw in valid_points:
-        x = FieldElement(x_raw, prime)
-        y = FieldElement(y_raw, prime)
-        Point(x, y, a, b)
-    for x_raw, y_raw in invalid_points:
-        x = FieldElement(x_raw, prime)
-        y = FieldElement(y_raw, prime)
-        with pytest.raises(ValueError):
-            Point(x, y, a, b)
-
-def test_ex3_2():
-    prime = 223
-    a = FieldElement(0, prime)
-    b = FieldElement(7, prime)
-    points = [[(170, 142), (60, 139)], [(47, 71), (17, 56)], [(143, 98), (76, 66)]]
-    for x_raw, y_raw in points:
-        x1 = FieldElement(x_raw[0], prime)
-        y1 = FieldElement(x_raw[1], prime)
-        x2 = FieldElement(y_raw[0], prime)
-        y2 = FieldElement(y_raw[1], prime)
-        c = Point(x1, y1, a, b)
-        d = Point(x2, y2, a, b)
-        ans = c + d
-        print(ans.x, ans.y)
-
-def test_ex3_4():
-    prime = 223
-    a = FieldElement(0, prime)
-    b = FieldElement(7, prime)
-    points = [
-        (2, 192, 105),
-        (2, 143, 98),
-        (2, 47, 71),
-        (4, 47, 71),
-        (8, 47, 71),
-        (21, 47, 71),
-    ]
-    for c, x_raw, y_raw in points:
-        x = FieldElement(x_raw, prime)
-        y = FieldElement(y_raw, prime)
-        d = Point(x, y, a, b)
-        ans = c * d
-        print(ans.x, ans.y)
-
-def test_ex3_5():
-    prime = 223
-    a = FieldElement(0, prime)
-    b = FieldElement(7, prime)
-    x = FieldElement(15, prime)
-    y = FieldElement(86, prime)
-    p = Point(x, y, a, b)
-    print(7 * p)
-
-def test_ex3_6_1():
-    p = S256Point(
-        0x887387E452B8EACC4ACFDE10D9AAF7F6D9A0F975AABB10D006E4DA568744D06C,
-        0x61DE6D95231CD89026E286DF3B6AE4A894A3378E393E93A0F45B666329A0AE34,
-    )
-    z = 0xEC208BAA0FC1C19F708A9CA96FDEFF3AC3F230BB4A7BA4AEDE4942AD003C0F60
-    r = 0xAC8D1C87E51D0D441BE8B3DD5B05C8795B48875DFFE00B7FFCFAC23010D3A395
-    s = 0x68342CEFF8935EDEDD102DD876FFD6BA72D6A427A3EDB13D26EB0781CB423C4
-    assert p.verify(z, Signature(r, s))
-
-def test_ex3_6_2():
-    p = S256Point(
-        0x887387E452B8EACC4ACFDE10D9AAF7F6D9A0F975AABB10D006E4DA568744D06C,
-        0x61DE6D95231CD89026E286DF3B6AE4A894A3378E393E93A0F45B666329A0AE34,
-    )
-    z = 0x7C076FF316692A3D7EB3C3BB0F8B1488CF72E1AFCD929E29307032997A838A3D
-    r = 0xEFF69EF2B1BD93A66ED5219ADD4FB51E11A840F404876325A1E8FFE0529A2C
-    s = 0xC7207FEE197D27C618AEA621406F6BF5EF6FCA38681D82B2F06FDDBDCE6FEAB6
-    assert p.verify(z, Signature(r, s))
-
-def test_ex3_7():
-    e = 12345
-    z = int.from_bytes(hash256(b"Programming Bitcoin!"), "big")
-    pk = PrivateKey(e).sign(z)
-    print(pk)
-    print((e * G).verify(z, pk))
-
-def test_ex4_1_1():
-    priv = PrivateKey(5000)
-    print(priv.point.sec(compressed=False).hex())
-
-def test_ex4_1_2():
-    priv = PrivateKey(pow(2018, 5))
-    print(priv.point.sec(compressed=False).hex())
-
-def test_ex4_1_3():
-    priv = PrivateKey(0xDEADBEEF12345)
-    print(priv.point.sec(compressed=False).hex())
-
-def test_ex4_2_1():
-    priv = PrivateKey(5001)
-    print(priv.point.sec(compressed=False).hex())
-
-def test_ex4_2_2():
-    priv = PrivateKey(pow(2019, 5))
-    print(priv.point.sec(compressed=False).hex())
-
-def test_ex4_2_3():
-    priv = PrivateKey(0xDEADBEEF54321)
-    print(priv.point.sec(compressed=False).hex())
-
-def test_ex4_3():
-    r = 0x37206A0610995C58074999CB9767B87AF4C4978DB68C06E8E6E81D282047A7C6
-    s = 0x8CA63759C1157EBEAEC0D03CECCA119FC9A75BF8E6D0FA65C841C8E2738CDAEC
-    sig = Signature(r, s)
-    print(sig.der().hex())
-
-def test_ex4_4_1():
-    h = "7c076ff316692a3d7eb3c3bb0f8b1488cf72e1afcd929e29307032997a838a3d"
-    print(encode_base58(bytes.fromhex(h)))
-
-def test_ex4_4_2():
-    h = "eff69ef2b1bd93a66ed5219add4fb51e11a840f404876325a1e8ffe0529a2c"
-    print(encode_base58(bytes.fromhex(h)))
-
-def test_ex4_4_3():
-    h = "c7207fee197d27c618aea621406f6bf5ef6fca38681d82b2f06fddbdce6feab6"
-    print(encode_base58(bytes.fromhex(h)))
-
-def test_ex4_5_1():
-    priv = PrivateKey(5002)
-    print(priv.point.address(compressed=False, testnet=True))
-
-def test_ex4_5_2():
-    priv = PrivateKey(pow(2020, 5))
-    print(priv.point.address(compressed=False, testnet=True))
-
-def test_ex4_5_3():
-    priv = PrivateKey(0x12345DEADBEEF)
-    print(priv.point.address(compressed=False, testnet=True))
-
+if __name__ == "__main__":
+    ScriptTest.main()
