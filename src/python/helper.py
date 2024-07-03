@@ -1,4 +1,5 @@
 import hashlib
+from Crypto.Hash import RIPEMD160
 
 BASE58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 
@@ -7,7 +8,7 @@ def hash160(s):
     """
     sha256の後にripemd160が続く
     """
-    return hashlib.new("ripemd160", hashlib.sha256(s).digest()).digest()
+    return RIPEMD160.new(hashlib.sha256(s).digest()).digest()
 
 
 def hash256(s):
